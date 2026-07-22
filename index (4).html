@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مینی‌اپ تلگرام</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            border-radius: 16px;
+            padding: 30px 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--tg-theme-button-color, #0088cc);
+            color: var(--tg-theme-button-text-color, #ffffff);
+            font-size: 48px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 25px;
+            color: var(--tg-theme-text-color, #000000);
+        }
+
+        .info-card {
+            background: var(--tg-theme-bg-color, #ffffff);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--tg-theme-hint-color, #cccccc);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .info-card:nth-child(2) { animation-delay: 0.1s; }
+        .info-card:nth-child(3) { animation-delay: 0.2s; }
+        .info-card:nth-child(4) { animation-delay: 0.3s; }
+        .info-card:nth-child(5) { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .info-label {
+            color: var(--tg-theme-hint-color, #666666);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: var(--tg-theme-text-color, #000000);
+            font-size: 16px;
+            font-weight: 600;
+            direction: ltr;
+            text-align: left;
+            max-width: 60%;
+            word-break: break-word;
+        }
+
+        .status-badge {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            background: var(--tg-theme-button-color, #0088cc);
+            color: var(--tg-theme-button-text-color, #ffffff);
+            opacity: 0;
+            animation: fadeInUp 0.5s ease 0.5s forwards;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--tg-theme-hint-color, #666666);
+            font-size: 16px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="app">
+        <div id="loading" class="loading">⏳ در حال دریافت اطلاعات...</div>
+
+        <div id="content" class="hidden">
+            <div class="avatar" id="avatar">👤</div>
+            <h1>👋 اطلاعات کاربر</h1>
+
+            <div class="info-card">
+                <span class="info-label">🆔 شناسه</span>
+                <span class="info-value" id="userId">-</span>
+            </div>
+
+            <div class="info-card">
+                <span class="info-label">👤 نام</span>
+                <span class="info-value" id="firstName">-</span>
+            </div>
+
+            <div class="info-card">
+                <span class="info-label">📛 نام خانوادگی</span>
+                <span class="info-value" id="lastName">-</span>
+            </div>
+
+            <div class="info-card">
+                <span class="info-label">🏷️ یوزرنیم</span>
+                <span class="info-value" id="username">-</span>
+            </div>
+
+            <div class="info-card">
+                <span class="info-label">🌐 زبان</span>
+                <span class="info-value" id="language">-</span>
+            </div>
+
+            <div class="status-badge" id="status">✅ اتصال برقرار شد</div>
+        </div>
+    </div>
+
+    <script>
+        // منتظر میمونیم تا SDK کامل لود بشه
+        document.addEventListener('DOMContentLoaded', function() {
+            const tg = window.Telegram.WebApp;
+            
+            // اعلام آماده‌باش به تلگرام
+            tg.ready();
+
+            // گرفتن المنت‌ها
+            const loading = document.getElementById('loading');
+            const content = document.getElementById('content');
+            const userId = document.getElementById('userId');
+            const firstName = document.getElementById('firstName');
+            const lastName = document.getElementById('lastName');
+            const username = document.getElementById('username');
+            const language = document.getElementById('language');
+            const avatar = document.getElementById('avatar');
+            const status = document.getElementById('status');
+
+            // بررسی اینکه کاربر وارد شده یا نه
+            const user = tg.initDataUnsafe?.user;
+
+            if (user) {
+                // نمایش اطلاعات
+                userId.textContent = user.id || 'نامشخص';
+                firstName.textContent = user.first_name || 'نامشخص';
+                lastName.textContent = user.last_name || '—';
+                username.textContent = user.username ? `@${user.username}` : 'ندارد';
+                language.textContent = user.language_code || 'نامشخص';
+
+                // حرف اول نام برای آواتار
+                if (user.first_name) {
+                    avatar.textContent = user.first_name.charAt(0).toUpperCase();
+                }
+
+                // تغییر وضعیت
+                status.textContent = '✅ اطلاعات دریافت شد';
+                status.style.background = '#4CAF50';
+
+                // ارسال اطلاعات به بات (اختیاری)
+                // tg.sendData(JSON.stringify({ user: user }));
+                
+            } else {
+                // کاربر وارد نشده (شاید از طریق مرورگر باز کرده)
+                userId.textContent = '—';
+                firstName.textContent = '⚠️ وارد نشده';
+                lastName.textContent = '—';
+                username.textContent = '—';
+                language.textContent = '—';
+                avatar.textContent = '⚠️';
+                status.textContent = '⚠️ از طریق تلگرام باز کن!';
+                status.style.background = '#FF9800';
+            }
+
+            // مخفی کردن لودینگ و نمایش محتوا
+            loading.classList.add('hidden');
+            content.classList.remove('hidden');
+
+            // بزرگ کردن صفحه (اختیاری)
+            tg.expand();
+
+            // دکمه بستن (اختیاری)
+            tg.MainButton.setText('❌ بستن');
+            tg.MainButton.onClick(() => {
+                tg.close();
+            });
+            tg.MainButton.show();
+
+            // لاگ برای دیباگ
+            console.log('Telegram WebApp initialized:', tg);
+            console.log('User data:', user);
+            console.log('Theme params:', tg.colorScheme);
+        });
+    </script>
+
+</body>
+</html>
