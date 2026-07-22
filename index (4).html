@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>اونلی فا | 𝐎𝐧𝐞𝐥𝐢𝐅𝐀</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- ===== Phosphor Icons ===== -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <style>
+        /* ===== Reset ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+            background: var(--tg-theme-bg-color, #0a0a1a);
+            color: var(--tg-theme-text-color, #ffffff);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ===== App Container ===== */
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 0 16px 20px;
+            position: relative;
+        }
+
+        /* ===== Header ===== */
+        .header {
+            padding: 16px 0 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 0.5px solid var(--tg-theme-hint-color, #1f1f3a);
+            flex-shrink: 0;
+        }
+
+        .app-title {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .app-title i {
+            color: #f7971e;
+            font-size: 24px;
+        }
+
+        .app-title span {
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 14px;
+            border: none;
+            background: var(--tg-theme-secondary-bg-color, #1a1a2e);
+            color: var(--tg-theme-text-color, #fff);
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .header-btn:active {
+            transform: scale(0.92);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            color: #0a0a1a;
+        }
+
+        .user-avatar.admin {
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+        }
+
+        /* ===== Search Bar ===== */
+        .search-bar {
+            padding: 12px 0;
+            flex-shrink: 0;
+        }
+
+        .search-input-wrap {
+            display: flex;
+            align-items: center;
+            background: var(--tg-theme-secondary-bg-color, #1a1a2e);
+            border-radius: 14px;
+            padding: 0 16px;
+            border: 1px solid var(--tg-theme-hint-color, #1f1f3a);
+            transition: all 0.3s ease;
+        }
+
+        .search-input-wrap:focus-within {
+            border-color: #f7971e;
+            box-shadow: 0 0 0 3px rgba(247, 151, 30, 0.1);
+        }
+
+        .search-input-wrap i {
+            color: var(--tg-theme-hint-color, #666);
+            font-size: 20px;
+            margin-left: 12px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 0;
+            border: none;
+            background: transparent;
+            color: var(--tg-theme-text-color, #fff);
+            font-size: 15px;
+            outline: none;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        .search-input::placeholder {
+            color: var(--tg-theme-hint-color, #666);
+        }
+
+        /* ===== Category Tabs ===== */
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 4px 0 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            flex-shrink: 0;
+        }
+
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-tab {
+            padding: 8px 20px;
+            border-radius: 30px;
+            border: none;
+            background: var(--tg-theme-secondary-bg-color, #1a1a2e);
+            color: var(--tg-theme-hint-color, #888);
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .category-tab i {
+            font-size: 16px;
+        }
+
+        .category-tab.active {
+            background: var(--tg-theme-button-color, #f7971e);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(247, 151, 30, 0.25);
+        }
+
+        .category-tab:active {
+            transform: scale(0.95);
+        }
+
+        /* ===== Content Scroll ===== */
+        .content-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 80px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .content-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* ===== Section Title ===== */
+        .section-title {
+            padding: 8px 0 12px;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title .see-all {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--tg-theme-button-color, #f7971e);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ===== Post Card ===== */
+        .post-card {
+            background: var(--tg-theme-secondary-bg-color, #12122a);
+            border-radius: 18px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            border: 0.5px solid var(--tg-theme-hint-color, #1f1f3a);
+            transition: all 0.3s ease;
+            animation: fadeUp 0.4s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .post-card:active {
+            transform: scale(0.98);
+        }
+
+        .post-image {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: var(--tg-theme-hint-color, #1a1a3a);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .post-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-image .placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            color: var(--tg-theme-hint-color, #555);
+            font-size: 40px;
+        }
+
+        .post-body {
+            padding: 14px 16px 16px;
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+        }
+
+        .post-title {
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1.4;
+            color: var(--tg-theme-text-color, #fff);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .post-title i {
+            color: #f7971e;
+            font-size: 18px;
+        }
+
+        .post-date {
+            font-size: 11px;
+            color: var(--tg-theme-hint-color, #666);
+            background: var(--tg-theme-bg-color, #0a0a1a);
+            padding: 2px 12px;
+            border-radius: 30px;
+            flex-shrink: 0;
+            margin-right: 8px;
+        }
+
+        .post-desc {
+            font-size: 14px;
+            color: var(--tg-theme-hint-color, #aaa);
+            line-height: 1.6;
+            margin-bottom: 14px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .post-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 12px;
+            border-top: 0.5px solid var(--tg-theme-hint-color, #1f1f3a);
+        }
+
+        .post-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--tg-theme-button-color, #f7971e);
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .post-link i {
+            font-size: 16px;
+        }
+
+        .post-link:active {
+            transform: scale(0.95);
+        }
+
+        .post-stats {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .post-stats .stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            color: var(--tg-theme-hint-color, #888);
+        }
+
+        .post-stats .stat i {
+            font-size: 16px;
+        }
+
+        .post-stats .stat.liked i {
+            color: #ff4757;
+        }
+
+        .post-stats .stat .num {
+            font-weight: 600;
+        }
+
+        /* ===== Admin Panel ===== */
+        .admin-panel {
+            background: var(--tg-theme-secondary-bg-color, #12122a);
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.02);
+        }
+
+        .admin-panel.hidden {
+            display: none;
+        }
+
+        .admin-panel .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 0.5px solid var(--tg-theme-hint-color, #1f1f3a);
+        }
+
+        .admin-panel .panel-header i {
+            font-size: 22px;
+            color: #ffd700;
+        }
+
+        .admin-panel .panel-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffd700;
+        }
+
+        .admin-panel .panel-header .badge {
+            font-size: 10px;
+            background: rgba(255, 215, 0, 0.12);
+            color: #ffd700;
+            padding: 2px 12px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+
+        .admin-input {
+            width: 100%;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            border: 0.5px solid var(--tg-theme-hint-color, #2a2a4a);
+            background: var(--tg-theme-bg-color, #0a0a1a);
+            color: var(--tg-theme-text-color, #fff);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        .admin-input:focus {
+            border-color: #ffd700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.06);
+        }
+
+        .admin-input::placeholder {
+            color: var(--tg-theme-hint-color, #555);
+        }
+
+        .admin-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .admin-row .admin-input {
+            flex: 1;
+        }
+
+        .admin-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: #ffd700;
+            color: #0a0a1a;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .admin-btn i {
+            font-size: 18px;
+        }
+
+        .admin-btn:active {
+            transform: scale(0.97);
+        }
+
+        .admin-btn.secondary {
+            background: var(--tg-theme-hint-color, #2a2a4a);
+            color: var(--tg-theme-text-color, #fff);
+            margin-top: 8px;
+        }
+
+        .admin-status {
+            margin-top: 10px;
+            font-size: 13px;
+            text-align: center;
+            color: var(--tg-theme-hint-color, #888);
+        }
+
+        .admin-status.success {
+            color: #4caf50;
+        }
+        .admin-status.error {
+            color: #ff4757;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ===== Empty State ===== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--tg-theme-hint-color, #666);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+        }
+
+        /* ===== Admin Controls on Post ===== */
+        .post-admin-controls {
+            display: flex;
+            gap: 8px;
+            padding: 0 16px 16px;
+        }
+
+        .post-admin-controls button {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .post-admin-controls button i {
+            font-size: 14px;
+        }
+
+        .post-admin-controls button:active {
+            transform: scale(0.95);
+        }
+
+        .btn-edit {
+            background: rgba(255, 215, 0, 0.12);
+            color: #ffd700;
+        }
+
+        .btn-delete {
+            background: rgba(255, 71, 87, 0.12);
+            color: #ff4757;
+        }
+
+        /* ===== Loading ===== */
+        .loading {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--tg-theme-hint-color, #666);
+        }
+
+        .loading i {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 12px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== Dock (منوی پایین) ===== */
+        .dock {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--tg-theme-secondary-bg-color, #1a1a2e);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            padding: 6px 12px;
+            border-radius: 30px;
+            display: flex;
+            gap: 8px;
+            border: 0.5px solid var(--tg-theme-hint-color, #1f1f3a);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            z-index: 50;
+            flex-shrink: 0;
+        }
+
+        .dock-btn {
+            background: transparent;
+            border: none;
+            color: var(--tg-theme-hint-color, #666);
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .dock-btn i {
+            font-size: 24px;
+        }
+
+        .dock-btn.active {
+            color: var(--tg-theme-text-color, #fff);
+            background: var(--tg-theme-button-color, #f7971e);
+            box-shadow: 0 4px 20px rgba(247, 151, 30, 0.3);
+        }
+
+        .dock-btn:active {
+            transform: scale(0.92);
+        }
+
+        .dock-btn .badge-dot {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 8px;
+            height: 8px;
+            background: #ff4757;
+            border-radius: 50%;
+            border: 2px solid var(--tg-theme-secondary-bg-color, #1a1a2e);
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 420px) {
+            .app-container {
+                padding: 0 12px 16px;
+            }
+            .post-title {
+                font-size: 15px;
+            }
+            .post-body {
+                padding: 12px 14px 14px;
+            }
+            .dock-btn {
+                width: 42px;
+                height: 42px;
+                font-size: 20px;
+            }
+            .dock-btn i {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+        <div class="app-title">
+            <i class="ph-fill ph-film-strip"></i>
+            <span>اونلی فا | 𝐎𝐧𝐞𝐥𝐢𝐅𝐀</span>
+        </div>
+        <div class="header-actions">
+            <button class="header-btn" id="themeToggle">
+                <i class="ph ph-moon"></i>
+            </button>
+            <div class="user-avatar" id="userAvatar">👤</div>
+        </div>
+    </header>
+
+    <!-- ===== SEARCH ===== -->
+    <div class="search-bar">
+        <div class="search-input-wrap">
+            <i class="ph ph-magnifying-glass"></i>
+            <input class="search-input" id="searchInput" type="text" placeholder="جستجوی فیلم، بازیگر، ژانر...">
+            <i class="ph ph-x" id="searchClear" style="cursor:pointer;display:none;font-size:18px;"></i>
+        </div>
+    </div>
+
+    <!-- ===== CATEGORIES ===== -->
+    <div class="category-tabs" id="categoryTabs">
+        <button class="category-tab active" data-cat="all">
+            <i class="ph ph-grid-four"></i> همه
+        </button>
+        <button class="category-tab" data-cat="action">
+            <i class="ph ph-lightning"></i> اکشن
+        </button>
+        <button class="category-tab" data-cat="drama">
+            <i class="ph ph-mask-happy"></i> درام
+        </button>
+        <button class="category-tab" data-cat="comedy">
+            <i class="ph ph-smiley"></i> کمدی
+        </button>
+        <button class="category-tab" data-cat="sci-fi">
+            <i class="ph ph-planet"></i> علمی
+        </button>
+    </div>
+
+    <!-- ===== CONTENT ===== -->
+    <div class="content-scroll" id="contentScroll">
+
+        <!-- ===== ADMIN PANEL ===== -->
+        <div id="adminPanel" class="admin-panel hidden">
+            <div class="panel-header">
+                <i class="ph-fill ph-gear"></i>
+                <h3>پنل مدیریت</h3>
+                <span class="badge">ادمین</span>
+            </div>
+
+            <input class="admin-input" id="postImage" placeholder="🔗 لینک پوستر فیلم">
+            <input class="admin-input" id="postTitle" placeholder="📌 عنوان فیلم">
+            <input class="admin-input" id="postCategory" placeholder="🏷 ژانر (مثلاً: اکشن)">
+            <textarea class="admin-input" id="postDesc" rows="2" placeholder="✍ توضیحات فیلم..."></textarea>
+            <input class="admin-input" id="postLink" placeholder="🔗 لینک دانلود">
+
+            <div class="admin-row">
+                <input class="admin-input" id="postLikes" type="number" placeholder="❤️ لایک" value="0">
+                <input class="admin-input" id="postDate" placeholder="📅 تاریخ">
+            </div>
+
+            <button class="admin-btn" id="publishBtn">
+                <i class="ph ph-plus-circle"></i> انتشار پست
+            </button>
+            <button class="admin-btn secondary hidden" id="updateBtn">
+                <i class="ph ph-arrows-clockwise"></i> بروزرسانی
+            </button>
+
+            <div id="adminStatus" class="admin-status"></div>
+        </div>
+
+        <!-- ===== SECTION: جدیدترین ===== -->
+        <div class="section-title">
+            <span>🔥 جدیدترین‌ها</span>
+            <span class="see-all">
+                مشاهده همه <i class="ph ph-caret-left"></i>
+            </span>
+        </div>
+
+        <!-- ===== POSTS ===== -->
+        <div id="postsContainer">
+            <div class="loading">
+                <i class="ph-fill ph-spinner"></i>
+                در حال بارگذاری...
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== DOCK (منوی پایین) ===== -->
+    <div class="dock">
+        <button class="dock-btn active" data-tab="explore" title="اکسپلور">
+            <i class="ph-fill ph-compass"></i>
+        </button>
+        <button class="dock-btn" data-tab="search" title="جستجو">
+            <i class="ph ph-magnifying-glass"></i>
+        </button>
+        <button class="dock-btn" data-tab="profile" title="پروفایل">
+            <i class="ph ph-user"></i>
+            <span class="badge-dot"></span>
+        </button>
+    </div>
+
+</div>
+
+<script>
+    // ============================================================
+    //  تنظیمات
+    // ============================================================
+    const GITHUB_TOKEN = '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';
+    const REPO_OWNER = 'mahanyo';
+    const REPO_NAME = 'miniapp';
+    const FILE_PATH = 'posts.json';
+    const ADMIN_ID = 8492696944;
+
+    let allPosts = [];
+    let editingPostId = null;
+    let currentCategory = 'all';
+
+    // ============================================================
+    //  راه‌اندازی
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        const user = tg.initDataUnsafe?.user;
+
+        // ---- Avatar ----
+        const avatar = document.getElementById('userAvatar');
+        if (user) {
+            const name = user.first_name || 'کاربر';
+            avatar.textContent = name.charAt(0).toUpperCase();
+            if (user.id === ADMIN_ID) {
+                avatar.classList.add('admin');
+                document.getElementById('adminPanel').classList.remove('hidden');
+            }
+        }
+
+        // ---- Events ----
+        document.getElementById('searchInput').addEventListener('input', handleSearch);
+        document.getElementById('searchClear').addEventListener('click', clearSearch);
+
+        document.querySelectorAll('.category-tab').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.category-tab').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentCategory = this.dataset.cat;
+                filterPosts();
+                if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            });
+        });
+
+        // ---- Dock ----
+        document.querySelectorAll('.dock-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.dock-btn').forEach(b => {
+                    b.classList.remove('active');
+                    b.querySelector('i').className = b.querySelector('i').className.replace('ph-fill', 'ph');
+                });
+                this.classList.add('active');
+                const icon = this.querySelector('i');
+                icon.className = icon.className.replace('ph', 'ph-fill');
+                if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            });
+        });
+
+        document.getElementById('publishBtn').addEventListener('click', handlePublish);
+        document.getElementById('updateBtn').addEventListener('click', handleUpdate);
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+        tg.MainButton.setText('✕ بستن');
+        tg.MainButton.onClick(() => tg.close());
+        tg.MainButton.show();
+
+        loadPosts();
+    });
+
+    // ============================================================
+    //  توابع اصلی
+    // ============================================================
+
+    async function loadPosts() {
+        try {
+            const res = await fetch(
+                `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
+                { headers: { 'Authorization': `token ${GITHUB_TOKEN}` } }
+            );
+            if (res.ok) {
+                const data = await res.json();
+                const content = atob(data.content);
+                allPosts = JSON.parse(content);
+            } else {
+                allPosts = [];
+            }
+            filterPosts();
+        } catch {
+            allPosts = [];
+            filterPosts();
+        }
+    }
+
+    function filterPosts() {
+        const search = document.getElementById('searchInput').value.toLowerCase().trim();
+        let filtered = allPosts;
+
+        if (currentCategory !== 'all') {
+            filtered = filtered.filter(p =>
+                (p.category || '').toLowerCase().includes(currentCategory)
+            );
+        }
+
+        if (search) {
+            filtered = filtered.filter(p =>
+                (p.title || '').toLowerCase().includes(search) ||
+                (p.desc || '').toLowerCase().includes(search)
+            );
+        }
+
+        renderPosts(filtered);
+    }
+
+    function renderPosts(posts) {
+        const container = document.getElementById('postsContainer');
+        const user = window.Telegram.WebApp.initDataUnsafe?.user;
+        const isAdmin = user && user.id === ADMIN_ID;
+
+        if (!posts || posts.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="ph-fill ph-film-slate"></i>
+                    <p>فیلمی پیدا نشد</p>
+                    <p style="font-size:13px;margin-top:4px;opacity:0.6;">سعی کن عبارت دیگه‌ای جستجو کنی</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = posts.map((post, i) => `
+            <div class="post-card" style="animation-delay: ${i * 0.04}s;">
+                <div class="post-image">
+                    ${post.image ? `<img src="${post.image}" alt="پوستر" loading="lazy">` :
+                    `<div class="placeholder"><i class="ph-fill ph-image"></i></div>`}
+                </div>
+                <div class="post-body">
+                    <div class="post-header">
+                        <div class="post-title">
+                            <i class="ph-fill ph-film-script"></i>
+                            ${post.title || 'بدون عنوان'}
+                        </div>
+                        <div class="post-date">${post.date || '---'}</div>
+                    </div>
+                    <div class="post-desc">${post.desc || ''}</div>
+                    <div class="post-footer">
+                        ${post.link ? `<a href="${post.link}" class="post-link" target="_blank"><i class="ph ph-download-simple"></i> دانلود</a>` :
+                        `<span style="font-size:13px;color:var(--tg-theme-hint-color,#666);"><i class="ph ph-link-simple"></i> لینکی نیست</span>`}
+                        <div class="post-stats">
+                            <span class="stat liked">
+                                <i class="ph-fill ph-heart"></i> <span class="num">${post.likes || 0}</span>
+                            </span>
+                            <span class="stat">
+                                <i class="ph-fill ph-chat-circle"></i> <span class="num">${post.comments || 0}</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                ${isAdmin ? `
+                    <div class="post-admin-controls">
+                        <button class="btn-edit" data-id="${post.id}"><i class="ph ph-pencil-simple"></i> ویرایش</button>
+                        <button class="btn-delete" data-id="${post.id}"><i class="ph ph-trash"></i> حذف</button>
+                    </div>
+                ` : ''}
+            </div>
+        `).join('');
+
+        if (isAdmin) {
+            document.querySelectorAll('.btn-edit').forEach(b => {
+                b.addEventListener('click', () => startEdit(parseInt(b.dataset.id)));
+            });
+            document.querySelectorAll('.btn-delete').forEach(b => {
+                b.addEventListener('click', () => {
+                    if (confirm('حذف کنم؟')) deletePost(parseInt(b.dataset.id));
+                });
+            });
+        }
+    }
+
+    // ---- جستجو ----
+    function handleSearch() {
+        const input = document.getElementById('searchInput');
+        const clear = document.getElementById('searchClear');
+        clear.style.display = input.value.length > 0 ? 'block' : 'none';
+        filterPosts();
+    }
+
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('searchClear').style.display = 'none';
+        filterPosts();
+    }
+
+    // ---- تم ----
+    function toggleTheme() {
+        const tg = window.Telegram.WebApp;
+        const body = document.body;
+        const isDark = body.style.background === 'rgb(10, 10, 26)' || !body.style.background;
+        body.style.background = isDark ? '#ffffff' : '#0a0a1a';
+        body.style.color = isDark ? '#000000' : '#ffffff';
+        if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+    }
+
+    // ---- انتشار ----
+    async function handlePublish() {
+        const status = document.getElementById('adminStatus');
+        const btn = document.getElementById('publishBtn');
+        btn.disabled = true;
+        status.textContent = '⏳ در حال انتشار...';
+        status.className = 'admin-status';
+
+        const newPost = {
+            id: Date.now(),
+            image: document.getElementById('postImage').value.trim(),
+            title: document.getElementById('postTitle').value.trim(),
+            category: document.getElementById('postCategory').value.trim(),
+            desc: document.getElementById('postDesc').value.trim(),
+            link: document.getElementById('postLink').value.trim(),
+            likes: parseInt(document.getElementById('postLikes').value) || 0,
+            comments: 0,
+            date: document.getElementById('postDate').value.trim() || new Date().toLocaleDateString('fa-IR')
+        };
+
+        if (!newPost.title) {
+            status.textContent = '⚠️ عنوان رو وارد کن!';
+            status.className = 'admin-status error';
+            btn.disabled = false;
+            return;
+        }
+
+        try {
+            const res = await fetch(
+                `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
+                { headers: { 'Authorization': `token ${GITHUB_TOKEN}` } }
+            );
+            let posts = [];
+            let sha = null;
+            if (res.ok) {
+                const data = await res.json();
+                sha = data.sha;
+                posts = JSON.parse(atob(data.content));
+            }
+            posts.unshift(newPost);
+
+            const upd = await fetch(
+                `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `پست: ${newPost.title}`,
+                        content: btoa(JSON.stringify(posts, null, 2)),
+                        sha: sha
+                    })
+                }
+            );
+
+            if (upd.ok) {
+                status.textContent = '✅ منتشر شد!';
+                status.className = 'admin-status success';
+                clearForm();
+                loadPosts();
+                if (window.Telegram.WebApp.HapticFeedback) {
+                    window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+                }
+            } else throw new Error('خطا');
+        } catch {
+            status.textContent = '❌ خطا در انتشار';
+            status.className = 'admin-status error';
+        }
+        btn.disabled = false;
+    }
+
+    // ---- ویرایش ----
+    function startEdit(id) {
+        const post = allPosts.find(p => p.id === id);
+        if (!post) return;
+        editingPostId = id;
+
+        document.getElementById('postImage').value = post.image || '';
+        document.getElementById('postTitle').value = post.title || '';
+        document.getElementById('postCategory').value = post.category || '';
+        document.getElementById('postDesc').value = post.desc || '';
+        document.getElementById('postLink').value = post.link || '';
+        document.getElementById('postLikes').value = post.likes || 0;
+        document.getElementById('postDate').value = post.date || '';
+
+        document.getElementById('publishBtn').classList.add('hidden');
+        document.getElementById('updateBtn').classList.remove('hidden');
+        document.getElementById('adminStatus').textContent = '✎ ویرایش';
+        document.getElementById('adminStatus').className = 'admin-status';
+        document.getElementById('contentScroll').scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function handleUpdate() {
+        if (!editingPostId) return;
+        const status = document.getElementById('adminStatus');
+        const btn = document.getElementById('updateBtn');
+        btn.disabled = true;
+
+        const updated = {
+            id: editingPostId,
+            image: document.getElementById('postImage').value.trim(),
+            title: document.getElementById('postTitle').value.trim(),
+            category: document.getElementById('postCategory').value.trim(),
+            desc: document.getElementById('postDesc').value.trim(),
+            link: document.getElementById('postLink').value.trim(),
+            likes: parseInt(document.getElementById('postLikes').value) || 0,
+            comments: 0,
+            date: document.getElementById('postDate').value.trim() || new Date().toLocaleDateString('fa-IR')
+        };
+
+        if (!updated.title) {
+            status.textContent = '⚠️ عنوان رو وارد کن!';
+            status.className = 'admin-status error';
+            btn.disabled = false;
+            return;
+        }
+
+        try {
+            const idx = allPosts.findIndex(p => p.id === editingPostId);
+            if (idx === -1) throw new Error('پیدا نشد');
+            allPosts[idx] = updated;
+
+            const res = await fetch(
+                `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
+                { headers: { 'Authorization': `token ${GITHUB_TOKEN}` } }
+            );
+            const data = await res.json();
+
+            const upd = await fetch(
+                `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `بروزرسانی: ${updated.title}`,
+                        content: btoa(JSON.stringify(allPosts, null, 2)),
+                        sha: data.sha
+                    })
+                }
+            );
+
+            if (upd.ok) {
+                status.textContent = '✅ بروزرسانی شد!';
+                status.className = 'admin-status success';
+                clearForm();
+                document.getElementById('publishBtn').classList.remove('hidden');
+                document.getElementById('updateBtn').classList.add('hidden');
+                editingPostId = null;
+                loadPosts();
+                if (window.Telegram.WebApp.HapticFeedback) {
+                    window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+                }
+            } else throw new Error('خطا');
+        } catch {
+            status.textContent = '❌ خطا';
+            status.className = 'admin-status error';
+        }
+        btn.disabled = false;
+    }
+
+    // ---- حذف ----
+    async function deletePost(id) {
+        try {
+            allPosts = allPosts.filter(p => p.id !== id);
+            const res = await fetch(
+                `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
+                { headers: { 'Authorization': `token ${GITHUB_TOKEN}` } }
+            );
+            const data = await res.json();
+
+            await fetch(
+                `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: 'حذف پست',
+                        content: btoa(JSON.stringify(allPosts, null, 2)),
+                        sha: data.sha
+                    })
+                }
+            );
+            loadPosts();
+        } catch {
+            alert('خطا در حذف');
+        }
+    }
+
+    function clearForm() {
+        ['postImage', 'postTitle', 'postCategory', 'postDesc', 'postLink', 'postDate'].forEach(id =>
+            document.getElementById(id).value = '');
+        document.getElementById('postLikes').value = '0';
+        document.getElementById('adminStatus').textContent = '';
+        document.getElementById('adminStatus').className = 'admin-status';
+    }
+</script>
+</body>
+</html>
