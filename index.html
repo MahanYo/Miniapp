@@ -990,75 +990,91 @@
 
     // ---- انتشار ----
     async function handlePublish() {
-        const status = document.getElementById('adminStatus');
-        const btn = document.getElementById('publishBtn');
-        btn.disabled = true;
-        status.textContent = '⏳ در حال انتشار...';
-        status.className = 'admin-status';
+    const status = document.getElementById('adminStatus');
+    const btn = document.getElementById('publishBtn');
+    btn.disabled = true;
+    status.textContent = '⏳ در حال انتشار...';
+    status.className = 'admin-status';
 
-        const newPost = {
-            id: Date.now(),
-            image: document.getElementById('postImage').value.trim(),
-            title: document.getElementById('postTitle').value.trim(),
-            category: document.getElementById('postCategory').value.trim(),
-            desc: document.getElementById('postDesc').value.trim(),
-            link: document.getElementById('postLink').value.trim(),
-            likes: parseInt(document.getElementById('postLikes').value) || 0,
-            comments: 0,
-            date: document.getElementById('postDate').value.trim() || new Date().toLocaleDateString('fa-IR')
-        };
+    const newPost = {
+        id: Date.now(),
+        image: document.getElementById('postImage').value.trim(),
+        title: document.getElementById('postTitle').value.trim(),
+        category: document.getElementById('postCategory').value.trim(),
+        desc: document.getElementById('postDesc').value.trim(),
+        link: document.getElementById('postLink').value.trim(),
+        likes: parseInt(document.getElementById('postLikes').value) || 0,
+        comments: 0,
+        date: document.getElementById('postDate').value.trim() || new Date().toLocaleDateString('fa-IR')
+    };
 
-        if (!newPost.title) {
-            status.textContent = '⚠️ عنوان رو وارد کن!';
-            status.className = 'admin-status error';
-            btn.disabled = false;
-            return;
-        }
-
-        try {
-            const res = await fetch(
-                `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
-                { headers: { 'Authorization': `token ${GITHUB_TOKEN}` } }
-            );
-            let posts = [];
-            let sha = null;
-            if (res.ok) {
-                const data = await res.json();
-                sha = data.sha;
-                posts = JSON.parse(atob(data.content));
-            }
-            posts.unshift(newPost);
-
-            const upd = await fetch(
-                `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
-                {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${GITHUB_TOKEN}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: `پست: ${newPost.title}`,
-                        content: btoa(JSON.stringify(posts, null, 2)),
-                        sha: sha
-                    })
-                }
-            );
-
-            if (upd.ok) {
-                status.textContent = '✅ منتشر شد!';
-                status.className = 'admin-status success';
-                clearForm();
-                loadPosts();
-                if (window.Telegram.WebApp.HapticFeedback) {
-                    window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
-                }
-            } else throw new Error('خطا');
-        } catch {
-            status.textContent = '❌ خطا در انتشار';
-            status.className = 'admin-status error';
-        }
+    if (!newPost.title) {
+        status.textContent = '⚠️ عنوان رو وارد کن!';
+        status.className = 'admin-status error';
         btn.disabled = false;
+        return;
+    }
+
+    try {
+        // ۱. دریافت فایل فعلی با API
+        const res = await fetch(
+            `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
+            { 
+                headers: { 
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                } 
+            }
+        );
+        
+        let posts = [];
+        let sha = null;
+        
+        if (res.ok) {
+            const data = await res.json();
+            sha = data.sha;
+            const content = atob(data.content);
+            posts = JSON.parse(content);
+        }
+
+        // ۲. اضافه کردن پست جدید
+        posts.unshift(newPost);
+
+        // ۳. ذخیره در گیت‌هاب
+        const upd = await fetch(
+            `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify({
+                    message: `پست: ${newPost.title}`,
+                    content: btoa(unescape(encodeURIComponent(JSON.stringify(posts, null, 2)))),
+                    sha: sha
+                })
+            }
+        );
+
+        if (upd.ok) {
+            status.textContent = '✅ منتشر شد!';
+            status.className = 'admin-status success';
+            clearForm();
+            loadPosts();
+            if (window.Telegram.WebApp.HapticFeedback) {
+                window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+            }
+        } else {
+            const errorData = await upd.json();
+            throw new Error(errorData.message || 'خطا در ذخیره');
+        }
+    } catch (error) {
+        status.textContent = `❌ خطا: ${error.message}`;
+        status.className = 'admin-status error';
+    }
+    btn.disabled = false;
     }
 
     // ---- ویرایش ----
