@@ -864,25 +864,21 @@
     // ============================================================
 
     async function loadPosts() {
-        try {
-            const res = await fetch(
-                `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
-                { headers: { 'Authorization': `token ${GITHUB_TOKEN}` } }
-            );
-            if (res.ok) {
-                const data = await res.json();
-                const content = atob(data.content);
-                allPosts = JSON.parse(content);
-            } else {
-                allPosts = [];
-            }
-            filterPosts();
-        } catch {
+    try {
+        const res = await fetch(
+            `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${FILE_PATH}`
+        );
+        if (res.ok) {
+            allPosts = await res.json();
+        } else {
             allPosts = [];
-            filterPosts();
         }
+        filterPosts();
+    } catch {
+        allPosts = [];
+        filterPosts();
     }
-
+    }
     function filterPosts() {
         const search = document.getElementById('searchInput').value.toLowerCase().trim();
         let filtered = allPosts;
