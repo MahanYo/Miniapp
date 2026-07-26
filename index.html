@@ -16,7 +16,7 @@
     <header class="header">
         <div class="title">
             <i class="ph-fill ph-film-strip"></i>
-            <span id="pageTitle">اونلی فا</span>
+            <span id="pageTitle">اونلی فا | 𝐎𝐧𝐞𝐥𝐢𝐅𝐀</span>
         </div>
         <div class="header-actions">
             <button class="header-btn" id="themeToggle" onclick="toggleTheme()">
@@ -29,12 +29,40 @@
         </div>
     </header>
 
-    <!-- ===== PAGES ===== -->
-    <div id="pageContainer">
+    <!-- ===== SEARCH ===== -->
+    <div class="search-bar" style="padding:8px 0;flex-shrink:0;">
+        <div class="search-input-wrap" style="display:flex;align-items:center;background:var(--bg-secondary);border-radius:var(--radius-sm);padding:0 14px;border:0.5px solid var(--border-color);transition:var(--transition);">
+            <i class="ph ph-magnifying-glass" style="color:var(--text-muted);font-size:16px;margin-left:10px;"></i>
+            <input class="search-input" id="searchInput" type="text" placeholder="جستجو..." style="flex:1;padding:10px 0;border:none;background:transparent;color:var(--text-primary);font-size:14px;outline:none;-webkit-user-select:text;user-select:text;">
+            <i class="ph ph-x" id="searchClear" style="cursor:pointer;display:none;font-size:16px;color:var(--text-muted);"></i>
+        </div>
+    </div>
+
+    <!-- ===== CATEGORY TABS ===== -->
+    <div class="category-tabs" id="categoryTabs" style="display:flex;gap:6px;padding:4px 0 12px;overflow-x:auto;scrollbar-width:none;flex-shrink:0;">
+        <button class="category-tab active" data-cat="all" style="padding:6px 16px;border-radius:var(--radius-full);border:0.5px solid var(--border-color);background:var(--bg-secondary);color:var(--text-secondary);font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;transition:var(--transition);flex-shrink:0;display:flex;align-items:center;gap:4px;">
+            <i class="ph ph-grid-four" style="font-size:14px;"></i> همه
+        </button>
+        <button class="category-tab" data-cat="action" style="padding:6px 16px;border-radius:var(--radius-full);border:0.5px solid var(--border-color);background:var(--bg-secondary);color:var(--text-secondary);font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;transition:var(--transition);flex-shrink:0;display:flex;align-items:center;gap:4px;">
+            <i class="ph ph-lightning" style="font-size:14px;"></i> اکشن
+        </button>
+        <button class="category-tab" data-cat="drama" style="padding:6px 16px;border-radius:var(--radius-full);border:0.5px solid var(--border-color);background:var(--bg-secondary);color:var(--text-secondary);font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;transition:var(--transition);flex-shrink:0;display:flex;align-items:center;gap:4px;">
+            <i class="ph ph-mask-happy" style="font-size:14px;"></i> درام
+        </button>
+        <button class="category-tab" data-cat="comedy" style="padding:6px 16px;border-radius:var(--radius-full);border:0.5px solid var(--border-color);background:var(--bg-secondary);color:var(--text-secondary);font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;transition:var(--transition);flex-shrink:0;display:flex;align-items:center;gap:4px;">
+            <i class="ph ph-smiley" style="font-size:14px;"></i> کمدی
+        </button>
+        <button class="category-tab" data-cat="sci-fi" style="padding:6px 16px;border-radius:var(--radius-full);border:0.5px solid var(--border-color);background:var(--bg-secondary);color:var(--text-secondary);font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;transition:var(--transition);flex-shrink:0;display:flex;align-items:center;gap:4px;">
+            <i class="ph ph-planet" style="font-size:14px;"></i> علمی
+        </button>
+    </div>
+
+    <!-- ===== PAGES CONTAINER ===== -->
+    <div id="pageContainer" style="flex:1;overflow-y:auto;padding-bottom:4px;scrollbar-width:none;">
         <!-- صفحات توسط JS لود میشن -->
     </div>
 
-    <!-- ===== DOCK ===== -->
+    <!-- ===== DOCK (منوی پایین) ===== -->
     <div class="dock">
         <button class="dock-btn active" data-page="explore" onclick="navigateTo('explore')">
             <i class="ph-fill ph-compass"></i>
