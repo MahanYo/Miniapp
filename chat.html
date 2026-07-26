@@ -1,0 +1,17 @@
+<div class="page" id="page-chat">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:0.5px solid var(--border-color);">
+        <div style="font-size:15px;font-weight:700;display:flex;align-items:center;gap:6px;">
+            <i class="ph-fill ph-chat-dots" style="color:var(--accent);"></i> چت عمومی
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);" id="chatUsers">۰ پیام</div>
+    </div>
+    <div class="chat-messages" id="chatMessages" style="flex:1;overflow-y:auto;padding:8px 0;display:flex;flex-direction:column;gap:4px;scrollbar-width:none;max-height:calc(100vh - 200px);">
+        <!-- پیام‌ها توسط JS رندر میشن -->
+    </div>
+    <div class="chat-input-area" style="display:flex;gap:8px;padding:8px 0;border-top:0.5px solid var(--border-color);flex-shrink:0;align-items:flex-end;background:var(--bg-primary);">
+        <textarea id="chatInput" placeholder="پیام..." rows="1" style="flex:1;padding:10px 14px;border-radius:var(--radius-sm);border:0.5px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);font-size:14px;outline:none;resize:none;font-family:inherit;min-height:44px;max-height:120px;line-height:1.4;-webkit-user-select:text;user-select:text;transition:var(--transition);"></textarea>
+        <button id="chatSendBtn" style="width:44px;height:44px;border:none;border-radius:var(--radius-sm);background:var(--accent);color:#fff;font-size:20px;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="ph-fill ph-paper-plane-right"></i>
+        </button>
+    </div>
+</div>
