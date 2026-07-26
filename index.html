@@ -6,7 +6,1049 @@
     <title>اونلی فا | 𝐎𝐧𝐞𝐥𝐢𝐅𝐀</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* ============================================================
+           تم‌ها و متغیرها
+           ============================================================ */
+        :root {
+            --bg-primary: #0d0d0d;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #242424;
+            --bg-input: #2a2a2a;
+            --bg-hover: #2f2f2f;
+            --bg-sidebar: #0d0d0d;
+            --text-primary: #ececec;
+            --text-secondary: #a1a1aa;
+            --text-muted: #666;
+            --border-color: #2a2a2a;
+            --accent: #10a37f;
+            --accent-hover: #0d8b6a;
+            --shadow: 0 4px 20px rgba(0,0,0,0.5);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --radius-full: 30px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: -apple-system, 'Segoe UI', system-ui, sans-serif;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f7f7f8;
+            --bg-secondary: #ffffff;
+            --bg-sidebar: #f7f7f8;
+            --bg-card: #ffffff;
+            --bg-input: #f0f0f0;
+            --bg-hover: #e5e5e5;
+            --text-primary: #1a1a2e;
+            --text-secondary: #555;
+            --text-muted: #888;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        /* ============================================================
+           ریست و پایه
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 10px; }
+
+        /* ============================================================
+           کانتینر اصلی
+           ============================================================ */
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+            transition: var(--transition);
+            position: relative;
+            background-image: var(--bg-image, none);
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* ============================================================
+           هدر
+           ============================================================ */
+        .header {
+            padding: 12px 16px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 0.5px solid var(--border-color);
+            flex-shrink: 0;
+            background: var(--bg-primary);
+            transition: var(--transition);
+        }
+
+        .header .title {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header .title i {
+            color: var(--accent);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            border: 0.5px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .header-btn:active { transform: scale(0.9); }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: #fff;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-avatar.admin {
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+        }
+
+        /* ============================================================
+           جستجو و دسته‌بندی
+           ============================================================ */
+        .search-bar {
+            padding: 8px 12px 4px;
+            flex-shrink: 0;
+        }
+
+        .search-input-wrap {
+            display: flex;
+            align-items: center;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            padding: 0 14px;
+            border: 0.5px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .search-input-wrap:focus-within {
+            border-color: var(--accent);
+        }
+
+        .search-input-wrap i {
+            color: var(--text-muted);
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px 0;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        .search-input::placeholder { color: var(--text-muted); }
+
+        .category-tabs {
+            display: flex;
+            gap: 6px;
+            padding: 6px 12px 10px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            flex-shrink: 0;
+        }
+
+        .category-tabs::-webkit-scrollbar { display: none; }
+
+        .category-tab {
+            padding: 6px 16px;
+            border-radius: var(--radius-full);
+            border: 0.5px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: var(--transition);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .category-tab i { font-size: 14px; }
+
+        .category-tab.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        .category-tab:active { transform: scale(0.95); }
+
+        /* ============================================================
+           صفحات (همه توی یه فایل)
+           ============================================================ */
+        .page {
+            display: none;
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 12px 70px;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .page.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============================================================
+           پست‌ها (اکسپلور)
+           ============================================================ */
+        .post-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 14px;
+            border: 0.5px solid var(--border-color);
+            transition: var(--transition);
+            animation: fadeUp 0.35s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .post-card:active { transform: scale(0.98); }
+
+        .post-image {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: var(--bg-secondary);
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .post-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-image .placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            color: var(--text-muted);
+            font-size: 36px;
+        }
+
+        .post-body { padding: 12px 14px 14px; }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 4px;
+        }
+
+        .post-title {
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.3;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .post-title i { color: var(--accent); font-size: 16px; }
+
+        .post-date {
+            font-size: 10px;
+            color: var(--text-muted);
+            background: var(--bg-primary);
+            padding: 2px 10px;
+            border-radius: var(--radius-full);
+            flex-shrink: 0;
+            margin-right: 6px;
+        }
+
+        .post-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .post-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 10px;
+            border-top: 0.5px solid var(--border-color);
+        }
+
+        .post-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--accent);
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: var(--radius-full);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 12px;
+            transition: var(--transition);
+        }
+
+        .post-link:active { transform: scale(0.95); }
+
+        .post-stats {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .post-stats .stat {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .post-stats .stat:active { transform: scale(0.9); }
+
+        .post-stats .stat i { font-size: 15px; }
+
+        .post-stats .stat.liked i { color: #ff4757; }
+
+        .post-stats .stat .num { font-weight: 600; }
+
+        /* ============================================================
+           کامنت‌ها
+           ============================================================ */
+        .comments-section { padding: 0 14px 14px; display: none; }
+        .comments-section.open { display: block; }
+
+        .comment-item {
+            display: flex;
+            gap: 8px;
+            padding: 8px 0;
+            border-bottom: 0.5px solid var(--border-color);
+        }
+
+        .comment-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .comment-body { flex: 1; min-width: 0; }
+
+        .comment-name {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .comment-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            word-wrap: break-word;
+            margin-top: 1px;
+        }
+
+        .comment-input-wrap {
+            display: flex;
+            gap: 6px;
+            padding-top: 8px;
+        }
+
+        .comment-input {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            border: 0.5px solid var(--border-color);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-size: 13px;
+            outline: none;
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        .comment-input::placeholder { color: var(--text-muted); }
+
+        .comment-send {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: var(--accent);
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+
+        .comment-send:active { transform: scale(0.9); }
+
+        /* ============================================================
+           چت
+           ============================================================ */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0 10px;
+            border-bottom: 0.5px solid var(--border-color);
+        }
+
+        .chat-header-title {
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chat-header-title i { color: var(--accent); }
+
+        .chat-header-info {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            scrollbar-width: none;
+        }
+
+        .chat-messages::-webkit-scrollbar { display: none; }
+
+        .chat-msg {
+            max-width: 82%;
+            padding: 8px 12px;
+            border-radius: 14px;
+            font-size: 13px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .chat-msg.self {
+            background: var(--accent);
+            color: #fff;
+            align-self: flex-end;
+            border-bottom-right-radius: 3px;
+        }
+
+        .chat-msg.other {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            align-self: flex-start;
+            border-bottom-left-radius: 3px;
+        }
+
+        .chat-msg .sender {
+            font-size: 10px;
+            font-weight: 600;
+            opacity: 0.7;
+            margin-bottom: 1px;
+        }
+
+        .chat-msg .text { word-wrap: break-word; }
+
+        .chat-msg .time {
+            font-size: 9px;
+            opacity: 0.4;
+            margin-top: 3px;
+            display: block;
+            text-align: left;
+        }
+
+        .chat-msg .reply-indicator {
+            font-size: 11px;
+            opacity: 0.6;
+            padding: 2px 8px;
+            border-right: 2px solid var(--accent);
+            margin-bottom: 4px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
+            padding: 8px 0;
+            border-top: 0.5px solid var(--border-color);
+            flex-shrink: 0;
+            background: var(--bg-primary);
+            align-items: flex-end;
+        }
+
+        .chat-input-area textarea {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            border: 0.5px solid var(--border-color);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            resize: none;
+            font-family: inherit;
+            min-height: 44px;
+            max-height: 120px;
+            line-height: 1.4;
+            -webkit-user-select: text;
+            user-select: text;
+            transition: var(--transition);
+        }
+
+        .chat-input-area textarea:focus { border-color: var(--accent); }
+
+        .chat-input-area textarea::placeholder { color: var(--text-muted); }
+
+        .chat-input-area .input-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .chat-input-area .input-actions button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 18px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .chat-input-area .input-actions button:active { transform: scale(0.9); }
+
+        .chat-input-area .input-actions .send-btn {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        /* ============================================================
+           تیکت‌ها (پشتیبانی)
+           ============================================================ */
+        .ticket-item {
+            background: var(--bg-card);
+            border: 0.5px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .ticket-item:active { transform: scale(0.98); }
+
+        .ticket-item .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ticket-item .ticket-id {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .ticket-item .ticket-status {
+            font-size: 10px;
+            padding: 2px 10px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+        }
+
+        .ticket-item .ticket-status.open {
+            background: rgba(16, 163, 127, 0.15);
+            color: var(--accent);
+        }
+
+        .ticket-item .ticket-status.closed {
+            background: rgba(255, 71, 87, 0.15);
+            color: #ff4757;
+        }
+
+        .ticket-item .ticket-subject {
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .ticket-item .ticket-time {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* ============================================================
+           پروفایل
+           ============================================================ */
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            overflow: hidden;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent);
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ============================================================
+           تنظیمات
+           ============================================================ */
+        .settings-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 0.5px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .settings-item:active { opacity: 0.6; }
+
+        .settings-item .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .settings-item .left i {
+            font-size: 18px;
+            color: var(--accent);
+            width: 24px;
+        }
+
+        .settings-item .right {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .theme-option {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            margin: 0 4px;
+            transition: var(--transition);
+        }
+
+        .theme-option.active {
+            border-color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .theme-option:active { transform: scale(0.9); }
+
+        /* ============================================================
+           داک (منوی پایین)
+           ============================================================ */
+        .dock {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-secondary);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            padding: 4px 8px;
+            border-radius: var(--radius-full);
+            display: flex;
+            gap: 2px;
+            border: 0.5px solid var(--border-color);
+            box-shadow: var(--shadow);
+            z-index: 50;
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+
+        .dock-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            gap: 2px;
+        }
+
+        .dock-btn i { font-size: 20px; }
+
+        .dock-btn .label {
+            font-size: 9px;
+            font-weight: 500;
+        }
+
+        .dock-btn.active {
+            color: #fff;
+            background: var(--accent);
+            box-shadow: 0 4px 15px rgba(16, 163, 127, 0.25);
+        }
+
+        .dock-btn:active { transform: scale(0.9); }
+
+        .dock-btn .badge-dot {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 7px;
+            height: 7px;
+            background: #ff4757;
+            border-radius: 50%;
+            border: 2px solid var(--bg-secondary);
+        }
+
+        /* ============================================================
+           پنل مدیریت
+           ============================================================ */
+        .admin-panel {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+        }
+
+        .admin-panel.hidden { display: none; }
+
+        .admin-panel .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 0.5px solid var(--border-color);
+        }
+
+        .admin-panel .panel-header i {
+            font-size: 20px;
+            color: #ffd700;
+        }
+
+        .admin-panel .panel-header h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffd700;
+        }
+
+        .admin-panel .panel-header .badge {
+            font-size: 9px;
+            background: rgba(255, 215, 0, 0.12);
+            color: #ffd700;
+            padding: 2px 10px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+        }
+
+        .admin-panel .stats-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .admin-panel .stat-box {
+            flex: 1;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            padding: 10px;
+            text-align: center;
+        }
+
+        .admin-panel .stat-box .number {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffd700;
+        }
+
+        .admin-panel .stat-box .label {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .admin-input {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border-radius: var(--radius-sm);
+            border: 0.5px solid var(--border-color);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-size: 13px;
+            outline: none;
+            transition: var(--transition);
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        .admin-input:focus { border-color: #ffd700; }
+
+        .admin-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: #ffd700;
+            color: #0a0a1a;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .admin-btn:active { transform: scale(0.97); }
+
+        .admin-btn.secondary {
+            background: var(--border-color);
+            color: var(--text-primary);
+            margin-top: 6px;
+        }
+
+        .admin-status {
+            margin-top: 8px;
+            font-size: 12px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .admin-status.success { color: #4caf50; }
+        .admin-status.error { color: #ff4757; }
+
+        /* ============================================================
+           آپلود عکس
+           ============================================================ */
+        .upload-wrap {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .upload-btn {
+            padding: 10px 16px;
+            border: 1px dashed var(--border-color);
+            border-radius: var(--radius-sm);
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .upload-btn:active {
+            transform: scale(0.95);
+            background: var(--bg-secondary);
+        }
+
+        .upload-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            border: 0.5px solid var(--border-color);
+            flex-shrink: 0;
+            display: none;
+            position: relative;
+        }
+
+        .upload-preview.show { display: block; }
+
+        .upload-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-preview .remove {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #ff4757;
+            color: #fff;
+            border: none;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ============================================================
+           خالی
+           ============================================================ */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 10px;
+            opacity: 0.4;
+        }
+
+        /* ============================================================
+           ریسپانسیو
+           ============================================================ */
+        @media (max-width: 420px) {
+            .app-container { padding: 0 10px 70px; }
+            .dock-btn { width: 38px; height: 38px; font-size: 18px; }
+            .dock-btn i { font-size: 18px; }
+        }
+
+        .hidden { display: none !important; }
+    </style>
 </head>
 <body>
 
@@ -16,53 +1058,158 @@
     <header class="header">
         <div class="title">
             <i class="ph-fill ph-film-strip"></i>
-            <span id="pageTitle">اونلی فا | 𝐎𝐧𝐞𝐥𝐢𝐅𝐀</span>
+            <span id="pageTitle">اکسپلور</span>
         </div>
         <div class="header-actions">
             <button class="header-btn" id="themeToggle" onclick="toggleTheme()">
                 <i class="ph ph-moon"></i>
             </button>
-            <button class="header-btn" onclick="navigateTo('settings')">
+            <button class="header-btn" id="settingsToggle" onclick="navigateTo('settings')">
                 <i class="ph ph-gear"></i>
             </button>
             <div class="user-avatar" id="userAvatar" onclick="navigateTo('profile')">👤</div>
         </div>
     </header>
 
-    <!-- ===== SEARCH ===== -->
-    <div class="search-bar" style="padding:8px 0;flex-shrink:0;">
-        <div class="search-input-wrap" style="display:flex;align-items:center;background:var(--bg-secondary);border-radius:var(--radius-sm);padding:0 14px;border:0.5px solid var(--border-color);transition:var(--transition);">
-            <i class="ph ph-magnifying-glass" style="color:var(--text-muted);font-size:16px;margin-left:10px;"></i>
-            <input class="search-input" id="searchInput" type="text" placeholder="جستجو..." style="flex:1;padding:10px 0;border:none;background:transparent;color:var(--text-primary);font-size:14px;outline:none;-webkit-user-select:text;user-select:text;">
-            <i class="ph ph-x" id="searchClear" style="cursor:pointer;display:none;font-size:16px;color:var(--text-muted);"></i>
+    <!-- ===== جستجو ===== -->
+    <div class="search-bar">
+        <div class="search-input-wrap">
+            <i class="ph ph-magnifying-glass"></i>
+            <input class="search-input" id="searchInput" type="text" placeholder="جستجو...">
+            <i class="ph ph-x" id="searchClear" style="cursor:pointer;display:none;font-size:16px;"></i>
         </div>
     </div>
 
-    <!-- ===== CATEGORY TABS ===== -->
-    <div class="category-tabs" id="categoryTabs" style="display:flex;gap:6px;padding:4px 0 12px;overflow-x:auto;scrollbar-width:none;flex-shrink:0;">
-        <button class="category-tab active" data-cat="all" style="padding:6px 16px;border-radius:var(--radius-full);border:0.5px solid var(--border-color);background:var(--bg-secondary);color:var(--text-secondary);font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;transition:var(--transition);flex-shrink:0;display:flex;align-items:center;gap:4px;">
-            <i class="ph ph-grid-four" style="font-size:14px;"></i> همه
-        </button>
-        <button class="category-tab" data-cat="action" style="padding:6px 16px;border-radius:var(--radius-full);border:0.5px solid var(--border-color);background:var(--bg-secondary);color:var(--text-secondary);font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;transition:var(--transition);flex-shrink:0;display:flex;align-items:center;gap:4px;">
-            <i class="ph ph-lightning" style="font-size:14px;"></i> اکشن
-        </button>
-        <button class="category-tab" data-cat="drama" style="padding:6px 16px;border-radius:var(--radius-full);border:0.5px solid var(--border-color);background:var(--bg-secondary);color:var(--text-secondary);font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;transition:var(--transition);flex-shrink:0;display:flex;align-items:center;gap:4px;">
-            <i class="ph ph-mask-happy" style="font-size:14px;"></i> درام
-        </button>
-        <button class="category-tab" data-cat="comedy" style="padding:6px 16px;border-radius:var(--radius-full);border:0.5px solid var(--border-color);background:var(--bg-secondary);color:var(--text-secondary);font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;transition:var(--transition);flex-shrink:0;display:flex;align-items:center;gap:4px;">
-            <i class="ph ph-smiley" style="font-size:14px;"></i> کمدی
-        </button>
-        <button class="category-tab" data-cat="sci-fi" style="padding:6px 16px;border-radius:var(--radius-full);border:0.5px solid var(--border-color);background:var(--bg-secondary);color:var(--text-secondary);font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;transition:var(--transition);flex-shrink:0;display:flex;align-items:center;gap:4px;">
-            <i class="ph ph-planet" style="font-size:14px;"></i> علمی
-        </button>
+    <!-- ===== دسته‌بندی ===== -->
+    <div class="category-tabs" id="categoryTabs">
+        <button class="category-tab active" data-cat="all"><i class="ph ph-grid-four"></i> همه</button>
+        <button class="category-tab" data-cat="action"><i class="ph ph-lightning"></i> اکشن</button>
+        <button class="category-tab" data-cat="drama"><i class="ph ph-mask-happy"></i> درام</button>
+        <button class="category-tab" data-cat="comedy"><i class="ph ph-smiley"></i> کمدی</button>
+        <button class="category-tab" data-cat="sci-fi"><i class="ph ph-planet"></i> علمی</button>
     </div>
 
-    <!-- ===== PAGES CONTAINER ===== -->
-    <div id="pageContainer" style="flex:1;overflow-y:auto;padding-bottom:4px;scrollbar-width:none;">
-        <!-- صفحات توسط JS لود میشن -->
+    <!-- ===== صفحات ===== -->
+    <div id="pageContainer">
+        <!-- صفحه اکسپلور -->
+        <div class="page active" id="page-explore">
+            <!-- پنل مدیریت -->
+            <div id="adminPanel" class="admin-panel hidden">
+                <div class="panel-header">
+                    <i class="ph-fill ph-gear"></i>
+                    <h3>پنل مدیریت</h3>
+                    <span class="badge">ادمین</span>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-box"><div class="number" id="statPosts">0</div><div class="label">پست</div></div>
+                    <div class="stat-box"><div class="number" id="statLikes">0</div><div class="label">لایک</div></div>
+                    <div class="stat-box"><div class="number" id="statComments">0</div><div class="label">کامنت</div></div>
+                </div>
+                <div class="upload-wrap">
+                    <button class="upload-btn" id="uploadBtn"><i class="ph ph-image"></i> انتخاب عکس</button>
+                    <div class="upload-preview" id="uploadPreview"><img id="previewImg" src=""><button class="remove" id="removeImg">✕</button></div>
+                </div>
+                <input class="admin-input" id="postImage" placeholder="🔗 یا لینک عکس" style="display:none;">
+                <input class="admin-input" id="postTitle" placeholder="📌 عنوان فیلم">
+                <input class="admin-input" id="postCategory" placeholder="🏷 ژانر">
+                <textarea class="admin-input" id="postDesc" rows="2" placeholder="✍ توضیحات"></textarea>
+                <input class="admin-input" id="postLink" placeholder="🔗 لینک دانلود">
+                <button class="admin-btn" id="publishBtn"><i class="ph ph-plus-circle"></i> انتشار</button>
+                <button class="admin-btn secondary hidden" id="updateBtn"><i class="ph ph-arrows-clockwise"></i> بروزرسانی</button>
+                <div id="adminStatus" class="admin-status"></div>
+            </div>
+
+            <div id="postsContainer">
+                <div class="loading" style="text-align:center;padding:30px 0;color:var(--text-muted);">
+                    <i class="ph-fill ph-spinner" style="font-size:28px;display:block;margin-bottom:10px;animation:spin 1s linear infinite;"></i>
+                    در حال بارگذاری...
+                </div>
+            </div>
+            <style>
+                @keyframes spin {
+                    to { transform: rotate(360deg); }
+                }
+            </style>
+        </div>
+
+        <!-- صفحه چت -->
+        <div class="page" id="page-chat">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="chat-header-title"><i class="ph-fill ph-chat-dots"></i> چت عمومی</div>
+                    <div class="chat-header-info" id="chatUsers">۰ پیام</div>
+                </div>
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-input-area">
+                    <textarea id="chatInput" placeholder="پیام..." rows="1"></textarea>
+                    <div class="input-actions">
+                        <button id="chatMediaBtn"><i class="ph ph-paperclip"></i></button>
+                        <button class="send-btn" id="chatSendBtn"><i class="ph-fill ph-paper-plane-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- صفحه پشتیبانی -->
+        <div class="page" id="page-support">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:0.5px solid var(--border-color);">
+                <div style="font-size:15px;font-weight:700;display:flex;align-items:center;gap:6px;">
+                    <i class="ph-fill ph-headset" style="color:var(--accent);"></i> پشتیبانی
+                </div>
+                <button id="newTicketBtn" style="background:var(--accent);color:#fff;border:none;padding:6px 14px;border-radius:var(--radius-full);font-size:12px;font-weight:600;cursor:pointer;">
+                    <i class="ph ph-plus"></i> تیکت جدید
+                </button>
+            </div>
+            <div id="ticketList" style="padding:8px 0;"></div>
+        </div>
+
+        <!-- صفحه پروفایل -->
+        <div class="page" id="page-profile">
+            <div style="text-align:center;padding:20px 0;">
+                <div class="profile-avatar" id="profileAvatar" onclick="openProfileEdit()">
+                    <img id="profileAvatarImg" src="" style="display:none;">
+                    <span id="profileAvatarText">👤</span>
+                </div>
+                <h2 style="font-size:18px;" id="profileName">کاربر</h2>
+                <p style="color:var(--text-muted);font-size:13px;" id="profileId">@unknown</p>
+                <p style="color:var(--text-secondary);font-size:12px;margin:8px 0;" id="profileBio">بیوگرافی</p>
+                <div style="display:flex;justify-content:center;gap:24px;margin:16px 0;">
+                    <div><div style="font-size:20px;font-weight:700;" id="profilePosts">0</div><div style="font-size:11px;color:var(--text-muted);">پست</div></div>
+                    <div><div style="font-size:20px;font-weight:700;" id="profileLikes">0</div><div style="font-size:11px;color:var(--text-muted);">لایک</div></div>
+                </div>
+                <button class="admin-btn" style="max-width:200px;margin:0 auto;" onclick="openProfileEdit()"><i class="ph ph-pencil"></i> ویرایش پروفایل</button>
+                <button class="admin-btn secondary" style="max-width:200px;margin:12px auto 0;background:transparent;border:0.5px solid #ff4757;color:#ff4757;" onclick="clearAllData()"><i class="ph ph-trash"></i> پاک کردن داده‌ها</button>
+            </div>
+        </div>
+
+        <!-- صفحه تنظیمات -->
+        <div class="page" id="page-settings">
+            <h3 style="margin-bottom:16px;"><i class="ph-fill ph-gear" style="color:var(--accent);"></i> تنظیمات</h3>
+            
+            <div class="settings-item" onclick="changeTheme('dark')">
+                <div class="left"><i class="ph ph-moon"></i> <span>تم تاریک</span></div>
+                <div class="right"><span class="theme-option active" style="background:#0d0d0d;" id="theme-dark"></span></div>
+            </div>
+            <div class="settings-item" onclick="changeTheme('light')">
+                <div class="left"><i class="ph ph-sun"></i> <span>تم روشن</span></div>
+                <div class="right"><span class="theme-option" style="background:#f7f7f8;" id="theme-light"></span></div>
+            </div>
+            <div class="settings-item" onclick="setBackground()">
+                <div class="left"><i class="ph ph-image"></i> <span>پس‌زمینه</span></div>
+                <div class="right">انتخاب</div>
+            </div>
+            <div class="settings-item" onclick="changeLanguage()">
+                <div class="left"><i class="ph ph-translate"></i> <span>زبان</span></div>
+                <div class="right" id="langDisplay">فارسی</div>
+            </div>
+            <div class="settings-item" onclick="openSupport()">
+                <div class="left"><i class="ph ph-headset"></i> <span>پشتیبانی</span></div>
+                <div class="right"><i class="ph ph-caret-left"></i></div>
+            </div>
+        </div>
     </div>
 
-    <!-- ===== DOCK (منوی پایین) ===== -->
+    <!-- ===== داک (منوی پایین) ===== -->
     <div class="dock">
         <button class="dock-btn active" data-page="explore" onclick="navigateTo('explore')">
             <i class="ph-fill ph-compass"></i>
@@ -85,6 +1232,802 @@
 
 </div>
 
-<script src="app.js"></script>
+<script>
+    // ============================================================
+    //  تنظیمات
+    // ============================================================
+    const API_URL = 'https://kos6rrrr.pythonanywhere.com/api';
+    const ADMIN_ID = 8492696944;
+    let currentPage = 'explore';
+    let allPosts = [];
+    let currentUser = null;
+    let replyTo = null;
+    let editingPostId = null;
+    let currentCategory = 'all';
+
+    // ============================================================
+    //  راه‌اندازی
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        const user = tg.initDataUnsafe?.user;
+        currentUser = user;
+
+        // آواتار کاربر
+        const avatar = document.getElementById('userAvatar');
+        if (user) {
+            const name = user.first_name || 'کاربر';
+            avatar.textContent = name.charAt(0).toUpperCase();
+            if (user.id === ADMIN_ID) {
+                avatar.classList.add('admin');
+            }
+        }
+
+        // پروفایل
+        updateProfileUI();
+
+        // لود پس‌زمینه ذخیره شده
+        const savedBg = localStorage.getItem('bg_image');
+        if (savedBg) {
+            document.getElementById('appContainer').style.setProperty('--bg-image', `url(${savedBg})`);
+        }
+
+        // لود تم ذخیره شده
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        changeTheme(savedTheme);
+
+        // لود پست‌ها
+        loadPosts();
+        loadChatMessages();
+        setInterval(loadChatMessages, 8000);
+
+        // رویدادها
+        document.getElementById('searchInput')?.addEventListener('input', handleSearch);
+        document.getElementById('searchClear')?.addEventListener('click', clearSearch);
+
+        document.querySelectorAll('.category-tab').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.category-tab').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentCategory = this.dataset.cat;
+                filterPosts();
+                if (window.Telegram.WebApp?.HapticFeedback) {
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+                }
+            });
+        });
+
+        // پنل مدیریت
+        document.getElementById('publishBtn')?.addEventListener('click', handlePublish);
+        document.getElementById('updateBtn')?.addEventListener('click', handleUpdate);
+
+        // آپلود عکس
+        document.getElementById('uploadBtn')?.addEventListener('click', function() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        document.getElementById('previewImg').src = ev.target.result;
+                        document.getElementById('uploadPreview').classList.add('show');
+                        document.getElementById('postImage').value = ev.target.result;
+                        document.getElementById('postImage').style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        });
+
+        document.getElementById('removeImg')?.addEventListener('click', function() {
+            document.getElementById('uploadPreview').classList.remove('show');
+            document.getElementById('postImage').value = '';
+            document.getElementById('postImage').style.display = 'none';
+        });
+
+        // چت
+        document.getElementById('chatSendBtn')?.addEventListener('click', sendChatMessage);
+        document.getElementById('chatInput')?.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendChatMessage();
+            }
+        });
+        document.getElementById('chatInput')?.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // چت مدیا
+        document.getElementById('chatMediaBtn')?.addEventListener('click', function() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*,video/*';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    if (file.size > 1024 * 1024) {
+                        alert('حجم فایل بیشتر از ۱ مگابایت است!');
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        sendChatMedia(ev.target.result, file.type.startsWith('video') ? 'video' : 'image');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        });
+
+        // تیکت
+        document.getElementById('newTicketBtn')?.addEventListener('click', createTicket);
+
+        console.log('✅ اپلیکیشن با موفقیت بارگذاری شد!');
+    });
+
+    // ============================================================
+    //  ناوبری
+    // ============================================================
+    function navigateTo(page) {
+        if (page === currentPage) return;
+        currentPage = page;
+        
+        document.querySelectorAll('.dock-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.page === page);
+            const icon = btn.querySelector('i');
+            icon.className = btn.classList.contains('active') ? 
+                icon.className.replace('ph', 'ph-fill') : 
+                icon.className.replace('ph-fill', 'ph');
+        });
+
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const targetPage = document.getElementById(`page-${page}`);
+        if (targetPage) targetPage.classList.add('active');
+
+        const titleMap = {
+            'explore': 'اکسپلور',
+            'chat': 'چت عمومی',
+            'support': 'پشتیبانی',
+            'profile': 'پروفایل',
+            'settings': 'تنظیمات'
+        };
+        document.getElementById('pageTitle').textContent = titleMap[page] || 'اونلی فا';
+        
+        if (window.Telegram.WebApp?.HapticFeedback) {
+            window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+        }
+    }
+
+    // ============================================================
+    //  پروفایل
+    // ============================================================
+    function updateProfileUI() {
+        const user = window.Telegram.WebApp.initDataUnsafe?.user;
+        if (user) {
+            document.getElementById('profileName').textContent = user.first_name || 'کاربر';
+            document.getElementById('profileId').textContent = user.username ? `@${user.username}` : 'کاربر';
+            const avatarImg = document.getElementById('profileAvatarImg');
+            const avatarText = document.getElementById('profileAvatarText');
+            if (avatarImg) {
+                avatarImg.src = `https://ui-avatars.com/api/?name=${user.first_name || 'کاربر'}&background=10a37f&color=fff&size=200`;
+                avatarImg.style.display = 'block';
+                avatarText.style.display = 'none';
+            }
+        }
+    }
+
+    function openProfileEdit() {
+        const user = window.Telegram.WebApp.initDataUnsafe?.user;
+        if (!user) return;
+        const name = prompt('نام جدید:', user.first_name || '');
+        if (name) {
+            fetch(`${API_URL}/profile`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: user.id,
+                    first_name: name
+                })
+            }).then(() => {
+                document.getElementById('profileName').textContent = name;
+                if (window.Telegram.WebApp?.HapticFeedback) {
+                    window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+                }
+            }).catch(() => alert('❌ خطا در ویرایش پروفایل'));
+        }
+    }
+
+    function clearAllData() {
+        if (confirm('همه داده‌های محلی پاک شود؟')) {
+            localStorage.clear();
+            location.reload();
+        }
+    }
+
+    // ============================================================
+    //  تنظیمات
+    // ============================================================
+    function changeTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        
+        document.querySelectorAll('.theme-option').forEach(el => {
+            el.classList.toggle('active', el.id === `theme-${theme}`);
+        });
+    }
+
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme') || 'dark';
+        changeTheme(current === 'dark' ? 'light' : 'dark');
+    }
+
+    function setBackground() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    document.getElementById('appContainer').style.setProperty('--bg-image', `url(${ev.target.result})`);
+                    localStorage.setItem('bg_image', ev.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+        input.click();
+    }
+
+    function changeLanguage() {
+        const langs = ['فارسی', 'English', 'العربية'];
+        const current = document.getElementById('langDisplay')?.textContent || 'فارسی';
+        const idx = langs.indexOf(current);
+        const next = langs[(idx + 1) % langs.length];
+        if (document.getElementById('langDisplay')) {
+            document.getElementById('langDisplay').textContent = next;
+        }
+        localStorage.setItem('language', next);
+    }
+
+    // ============================================================
+    //  پشتیبانی
+    // ============================================================
+    function openSupport() {
+        const user = window.Telegram.WebApp.initDataUnsafe?.user;
+        if (!user) return;
+        const msg = prompt('پیام خود را به پشتیبانی بنویسید:');
+        if (msg) {
+            fetch(`${API_URL}/support`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: user.id,
+                    username: user.first_name || 'کاربر',
+                    text: msg
+                })
+            }).then(() => {
+                alert('✅ پیام شما به پشتیبانی ارسال شد');
+                if (window.Telegram.WebApp?.HapticFeedback) {
+                    window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+                }
+            }).catch(() => alert('❌ خطا در ارسال پیام'));
+        }
+    }
+
+    // ============================================================
+    //  توابع پست‌ها
+    // ============================================================
+    async function loadPosts() {
+        try {
+            const res = await fetch(`${API_URL}/posts`);
+            if (res.ok) {
+                allPosts = await res.json();
+                updateStats();
+            } else allPosts = [];
+            filterPosts();
+        } catch { allPosts = []; filterPosts(); }
+    }
+
+    function updateStats() {
+        const totalLikes = allPosts.reduce((sum, p) => sum + (p.likes || 0), 0);
+        const totalComments = allPosts.reduce((sum, p) => sum + (p.comments || 0), 0);
+        document.getElementById('statPosts').textContent = allPosts.length;
+        document.getElementById('statLikes').textContent = totalLikes;
+        document.getElementById('statComments').textContent = totalComments;
+        document.getElementById('profilePosts').textContent = allPosts.length;
+        document.getElementById('profileLikes').textContent = totalLikes;
+    }
+
+    function filterPosts() {
+        const search = document.getElementById('searchInput')?.value.toLowerCase().trim() || '';
+        let filtered = allPosts;
+        if (currentCategory !== 'all') {
+            filtered = filtered.filter(p => (p.category || '').toLowerCase().includes(currentCategory));
+        }
+        if (search) {
+            filtered = filtered.filter(p => (p.title || '').toLowerCase().includes(search) || (p.desc || '').toLowerCase().includes(search));
+        }
+        renderPosts(filtered);
+    }
+
+    function renderPosts(posts) {
+        const container = document.getElementById('postsContainer');
+        const isAdmin = currentUser && currentUser.id === ADMIN_ID;
+
+        if (!container) return;
+        if (!posts || posts.length === 0) {
+            container.innerHTML = `<div class="empty-state"><i class="ph-fill ph-film-slate"></i><p>فیلمی پیدا نشد</p></div>`;
+            return;
+        }
+
+        container.innerHTML = posts.map((post, i) => `
+            <div class="post-card" style="animation-delay: ${i * 0.03}s;" id="post-${post.id}">
+                <div class="post-image" onclick="window.open('${post.image || ''}', '_blank')">
+                    ${post.image ? `<img src="${post.image}" alt="پوستر" loading="lazy">` :
+                    `<div class="placeholder"><i class="ph-fill ph-image"></i></div>`}
+                </div>
+                <div class="post-body">
+                    <div class="post-header">
+                        <div class="post-title"><i class="ph-fill ph-film-script"></i> ${post.title || 'بدون عنوان'}</div>
+                        <div class="post-date">${post.date || '---'}</div>
+                    </div>
+                    <div class="post-desc">${post.desc || ''}</div>
+                    <div class="post-footer">
+                        ${post.link ? `<a href="${post.link}" class="post-link" target="_blank"><i class="ph ph-download-simple"></i> دانلود</a>` :
+                        `<span style="font-size:12px;color:var(--text-muted);"><i class="ph ph-link-simple"></i> لینکی نیست</span>`}
+                        <div class="post-stats">
+                            <span class="stat ${post.user_liked ? 'liked' : ''}" onclick="toggleLike(${post.id})">
+                                <i class="${post.user_liked ? 'ph-fill' : 'ph'} ph-heart"></i> <span class="num" id="likes-${post.id}">${post.likes || 0}</span>
+                            </span>
+                            <span class="stat" onclick="toggleComments(${post.id})">
+                                <i class="ph-fill ph-chat-circle"></i> <span class="num" id="comments-${post.id}">${post.comments || 0}</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                ${isAdmin ? `
+                    <div class="post-admin-controls" style="display:flex;gap:6px;padding:0 14px 14px;">
+                        <button class="btn-edit" onclick="startEdit(${post.id})" style="flex:1;padding:6px;border:none;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(255,215,0,0.12);color:#ffd700;"><i class="ph ph-pencil-simple"></i> ویرایش</button>
+                        <button class="btn-delete" onclick="deletePost(${post.id})" style="flex:1;padding:6px;border:none;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;background:rgba(255,71,87,0.12);color:#ff4757;"><i class="ph ph-trash"></i> حذف</button>
+                    </div>
+                ` : ''}
+                <div class="comments-section" id="comments-${post.id}-section" style="padding:0 14px 14px;display:none;">
+                    <div id="comments-list-${post.id}"></div>
+                    <div style="display:flex;gap:6px;padding-top:8px;">
+                        <input class="comment-input" id="comment-input-${post.id}" placeholder="نظر..." style="flex:1;padding:8px 12px;border-radius:10px;border:0.5px solid var(--border-color);background:var(--bg-input);color:var(--text-primary);font-size:13px;outline:none;-webkit-user-select:text;user-select:text;">
+                        <button class="comment-send" onclick="sendComment(${post.id})" style="width:36px;height:36px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s ease;"><i class="ph-fill ph-paper-plane-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // ============================================================
+    //  لایک
+    // ============================================================
+    async function toggleLike(postId) {
+        const user = window.Telegram.WebApp.initDataUnsafe?.user;
+        if (!user) return;
+
+        try {
+            const res = await fetch(`${API_URL}/like`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ post_id: postId, user_id: user.id })
+            });
+
+            if (res.ok) {
+                const result = await res.json();
+                const likesSpan = document.getElementById(`likes-${postId}`);
+                if (likesSpan) likesSpan.textContent = result.likes;
+                const stat = document.querySelector(`#post-${postId} .post-stats .stat:first-child`);
+                if (stat) {
+                    stat.classList.toggle('liked');
+                    const icon = stat.querySelector('i');
+                    icon.className = stat.classList.contains('liked') ? 'ph-fill ph-heart' : 'ph ph-heart';
+                }
+                updateStats();
+                if (window.Telegram.WebApp?.HapticFeedback) {
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+                }
+            }
+        } catch (error) { console.error('خطا در لایک:', error); }
+    }
+
+    // ============================================================
+    //  کامنت
+    // ============================================================
+    async function toggleComments(postId) {
+        const section = document.getElementById(`comments-${postId}-section`);
+        if (!section) return;
+        if (section.style.display === 'block') { section.style.display = 'none'; return; }
+        section.style.display = 'block';
+        await loadComments(postId);
+    }
+
+    async function loadComments(postId) {
+        try {
+            const res = await fetch(`${API_URL}/comments/${postId}`);
+            if (res.ok) {
+                const comments = await res.json();
+                const container = document.getElementById(`comments-list-${postId}`);
+                if (!container) return;
+                if (!comments.length) {
+                    container.innerHTML = `<p style="color:var(--text-muted);font-size:12px;padding:8px 0;">هنوز نظری نیست</p>`;
+                } else {
+                    container.innerHTML = comments.map(c => `
+                        <div style="display:flex;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border-color);">
+                            <div style="width:28px;height:28px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">${c.username ? c.username.charAt(0).toUpperCase() : '👤'}</div>
+                            <div style="flex:1;min-width:0;">
+                                <div style="font-size:11px;font-weight:600;color:var(--text-primary);">${c.username || 'کاربر'}</div>
+                                <div style="font-size:12px;color:var(--text-secondary);word-wrap:break-word;">${c.text}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+        } catch (error) { console.error('خطا در دریافت کامنت:', error); }
+    }
+
+    async function sendComment(postId) {
+        const user = window.Telegram.WebApp.initDataUnsafe?.user;
+        if (!user) return;
+        const input = document.getElementById(`comment-input-${postId}`);
+        if (!input) return;
+        const text = input.value.trim();
+        if (!text) return;
+
+        try {
+            const res = await fetch(`${API_URL}/comment`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ post_id: postId, user_id: user.id, username: user.first_name || 'کاربر', text })
+            });
+
+            if (res.ok) {
+                input.value = '';
+                const commentsSpan = document.getElementById(`comments-${postId}`);
+                if (commentsSpan) commentsSpan.textContent = (parseInt(commentsSpan.textContent) || 0) + 1;
+                await loadComments(postId);
+                updateStats();
+                if (window.Telegram.WebApp?.HapticFeedback) {
+                    window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+                }
+            }
+        } catch (error) { console.error('خطا در ارسال کامنت:', error); }
+    }
+
+    // ============================================================
+    //  انتشار، ویرایش و حذف
+    // ============================================================
+    async function handlePublish() {
+        const status = document.getElementById('adminStatus');
+        const btn = document.getElementById('publishBtn');
+        if (!status || !btn) return;
+        btn.disabled = true;
+        status.textContent = '⏳ در حال انتشار...';
+        status.className = 'admin-status';
+
+        const newPost = {
+            image: document.getElementById('postImage')?.value.trim() || '',
+            title: document.getElementById('postTitle')?.value.trim() || '',
+            category: document.getElementById('postCategory')?.value.trim() || '',
+            desc: document.getElementById('postDesc')?.value.trim() || '',
+            link: document.getElementById('postLink')?.value.trim() || '',
+            user_id: currentUser ? currentUser.id : 0
+        };
+
+        if (!newPost.title) {
+            status.textContent = '⚠️ عنوان رو وارد کن!';
+            status.className = 'admin-status error';
+            btn.disabled = false;
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API_URL}/posts`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newPost)
+            });
+
+            if (res.ok) {
+                status.textContent = '✅ منتشر شد!';
+                status.className = 'admin-status success';
+                clearForm();
+                loadPosts();
+                if (window.Telegram.WebApp?.HapticFeedback) {
+                    window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+                }
+            } else {
+                throw new Error('خطا');
+            }
+        } catch (error) {
+            status.textContent = `❌ ${error.message}`;
+            status.className = 'admin-status error';
+        }
+        btn.disabled = false;
+    }
+
+    function startEdit(id) {
+        const post = allPosts.find(p => p.id === id);
+        if (!post) return;
+        editingPostId = id;
+
+        document.getElementById('postImage').value = post.image || '';
+        document.getElementById('postTitle').value = post.title || '';
+        document.getElementById('postCategory').value = post.category || '';
+        document.getElementById('postDesc').value = post.desc || '';
+        document.getElementById('postLink').value = post.link || '';
+
+        if (post.image) {
+            document.getElementById('previewImg').src = post.image;
+            document.getElementById('uploadPreview').classList.add('show');
+            document.getElementById('postImage').style.display = 'block';
+        }
+
+        document.getElementById('publishBtn').classList.add('hidden');
+        document.getElementById('updateBtn').classList.remove('hidden');
+        document.getElementById('adminStatus').textContent = '✎ ویرایش';
+        document.getElementById('adminStatus').className = 'admin-status';
+    }
+
+    async function handleUpdate() {
+        if (!editingPostId) return;
+        const status = document.getElementById('adminStatus');
+        const btn = document.getElementById('updateBtn');
+        if (!status || !btn) return;
+        btn.disabled = true;
+
+        const updated = {
+            id: editingPostId,
+            image: document.getElementById('postImage')?.value.trim() || '',
+            title: document.getElementById('postTitle')?.value.trim() || '',
+            category: document.getElementById('postCategory')?.value.trim() || '',
+            desc: document.getElementById('postDesc')?.value.trim() || '',
+            link: document.getElementById('postLink')?.value.trim() || ''
+        };
+
+        if (!updated.title) {
+            status.textContent = '⚠️ عنوان رو وارد کن!';
+            status.className = 'admin-status error';
+            btn.disabled = false;
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API_URL}/posts/${editingPostId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updated)
+            });
+
+            if (res.ok) {
+                status.textContent = '✅ بروزرسانی شد!';
+                status.className = 'admin-status success';
+                clearForm();
+                document.getElementById('publishBtn').classList.remove('hidden');
+                document.getElementById('updateBtn').classList.add('hidden');
+                editingPostId = null;
+                loadPosts();
+                if (window.Telegram.WebApp?.HapticFeedback) {
+                    window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+                }
+            } else {
+                throw new Error('خطا');
+            }
+        } catch {
+            status.textContent = '❌ خطا';
+            status.className = 'admin-status error';
+        }
+        btn.disabled = false;
+    }
+
+    async function deletePost(id) {
+        if (!confirm('حذف کنم؟')) return;
+        try {
+            const res = await fetch(`${API_URL}/posts/${id}`, { method: 'DELETE' });
+            if (res.ok) { loadPosts(); if (window.Telegram.WebApp?.HapticFeedback) {
+                window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+            }}
+        } catch { alert('خطا در حذف'); }
+    }
+
+    function clearForm() {
+        ['postImage', 'postTitle', 'postCategory', 'postDesc', 'postLink'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        document.getElementById('uploadPreview')?.classList.remove('show');
+        document.getElementById('postImage')?.style.display = 'none';
+        document.getElementById('adminStatus').textContent = '';
+        document.getElementById('adminStatus').className = 'admin-status';
+    }
+
+    function handleSearch() {
+        const input = document.getElementById('searchInput');
+        if (!input) return;
+        document.getElementById('searchClear').style.display = input.value.length ? 'block' : 'none';
+        filterPosts();
+    }
+
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('searchClear').style.display = 'none';
+        filterPosts();
+    }
+
+    // ============================================================
+    //  چت
+    // ============================================================
+    async function loadChatMessages() {
+        try {
+            const res = await fetch(`${API_URL}/chat`);
+            if (res.ok) {
+                const messages = await res.json();
+                const container = document.getElementById('chatMessages');
+                if (!container) return;
+                
+                const user = window.Telegram.WebApp.initDataUnsafe?.user;
+                const currentUserId = user?.id || currentUser?.id;
+                
+                if (messages.length === 0) {
+                    container.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:20px;">
+                        <i class="ph-fill ph-chat-dots" style="font-size:28px;display:block;margin-bottom:8px;"></i>
+                        اولین پیام رو بفرست!
+                    </div>`;
+                    return;
+                }
+                container.innerHTML = messages.map(m => `
+                    <div class="chat-msg ${m.user_id === currentUserId ? 'self' : 'other'}" id="msg-${m.id}">
+                        ${m.reply_text ? `<div class="reply-indicator">${m.reply_text}</div>` : ''}
+                        <div class="sender">${m.username || 'کاربر'}</div>
+                        ${m.media_type === 'image' ? `<img src="${m.media_url}" class="media" onclick="window.open('${m.media_url}','_blank')">` : ''}
+                        ${m.media_type === 'video' ? `<video src="${m.media_url}" class="media" controls onclick="event.stopPropagation()"></video>` : ''}
+                        ${m.text ? `<div class="text">${m.text}</div>` : ''}
+                        <span class="time">${m.date ? m.date.slice(0, 16).replace('T', ' ') : ''}</span>
+                    </div>
+                `).join('');
+                container.scrollTop = container.scrollHeight;
+                document.getElementById('chatUsers').textContent = `${messages.length} پیام`;
+            }
+        } catch (error) {
+            console.error('خطا در دریافت چت:', error);
+        }
+    }
+
+    async function sendChatMessage() {
+        const user = window.Telegram.WebApp.initDataUnsafe?.user;
+        if (!user) return;
+        const input = document.getElementById('chatInput');
+        if (!input) return;
+        const text = input.value.trim();
+        if (!text) return;
+
+        try {
+            const res = await fetch(`${API_URL}/chat`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: user.id,
+                    username: user.first_name || 'کاربر',
+                    text: text,
+                    reply_to: replyTo ? replyTo.id : null,
+                    reply_text: replyTo ? replyTo.text : null
+                })
+            });
+
+            if (res.ok) {
+                input.value = '';
+                input.style.height = 'auto';
+                replyTo = null;
+                await loadChatMessages();
+                if (window.Telegram.WebApp?.HapticFeedback) {
+                    window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+                }
+            }
+        } catch (error) {
+            console.error('خطا در ارسال پیام:', error);
+        }
+    }
+
+    async function sendChatMedia(mediaData, type) {
+        const user = window.Telegram.WebApp.initDataUnsafe?.user;
+        if (!user) return;
+
+        try {
+            const res = await fetch(`${API_URL}/chat/media`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    user_id: user.id,
+                    username: user.first_name || 'کاربر',
+                    media_url: mediaData,
+                    media_type: type
+                })
+            });
+
+            if (res.ok) {
+                await loadChatMessages();
+                if (window.Telegram.WebApp?.HapticFeedback) {
+                    window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+                }
+            }
+        } catch (error) { console.error('خطا در ارسال رسانه:', error); }
+    }
+
+    // ============================================================
+    //  تیکت‌ها (پشتیبانی)
+    // ============================================================
+    async function loadTickets() {
+        try {
+            const res = await fetch(`${API_URL}/tickets`);
+            if (res.ok) {
+                const tickets = await res.json();
+                const container = document.getElementById('ticketList');
+                if (!container) return;
+                if (tickets.length === 0) {
+                    container.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:40px 0;">
+                        <i class="ph-fill ph-ticket" style="font-size:40px;display:block;margin-bottom:12px;"></i>
+                        <p>هنوز تیکتی ثبت نشده</p>
+                    </div>`;
+                    return;
+                }
+                container.innerHTML = tickets.map(t => `
+                    <div class="ticket-item" onclick="openTicket(${t.id})">
+                        <div class="ticket-header">
+                            <span class="ticket-id">#${t.id}</span>
+                            <span class="ticket-status ${t.status}">${t.status === 'open' ? 'باز' : 'بسته شده'}</span>
+                        </div>
+                        <div class="ticket-subject">${t.subject}</div>
+                        <div class="ticket-time">${t.date || ''}</div>
+                    </div>
+                `).join('');
+            }
+        } catch (error) {
+            console.error('خطا در دریافت تیکت‌ها:', error);
+        }
+    }
+
+    function createTicket() {
+        const user = window.Telegram.WebApp.initDataUnsafe?.user;
+        if (!user) return;
+        const subject = prompt('موضوع تیکت:');
+        if (!subject) return;
+        const message = prompt('پیام خود را بنویسید:');
+        if (!message) return;
+
+        fetch(`${API_URL}/tickets`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                user_id: user.id,
+                username: user.first_name || 'کاربر',
+                subject: subject,
+                message: message
+            })
+        }).then(() => {
+            loadTickets();
+            alert('✅ تیکت شما ثبت شد');
+        }).catch(() => alert('❌ خطا در ثبت تیکت'));
+    }
+
+    function openTicket(id) {
+        alert(`تیکت #${id} باز شد`);
+    }
+
+    // بارگذاری تیکت‌ها در پس‌زمینه
+    document.addEventListener('DOMContentLoaded', function() {
+        loadTickets();
+    });
+</script>
 </body>
 </html>
