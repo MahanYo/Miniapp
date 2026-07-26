@@ -78,8 +78,10 @@ function loadPage(page) {
     };
     document.getElementById('pageTitle').textContent = titleMap[page] || 'اونلی فا';
 
-    // بارگذاری صفحه از فایل مربوطه
-    fetch(`pages/${page}.html`)
+    // آدرس کامل و دقیق فایل
+    const pageUrl = `/Miniapp/pages/${page}.html`;
+
+    fetch(pageUrl)
         .then(res => {
             if (!res.ok) throw new Error('Page not found');
             return res.text();
@@ -89,14 +91,13 @@ function loadPage(page) {
             initPage(page);
         })
         .catch(() => {
-            // اگر فایل پیدا نشد
             container.innerHTML = `<div class="page active" id="page-${page}">
                 <div style="text-align:center;padding:40px 0;color:var(--text-muted);">
                     <i class="ph-fill ph-warning" style="font-size:40px;display:block;margin-bottom:12px;"></i>
-                    <p>صفحه ${titleMap[page]} در دسترس نیست</p>
+                    <p>خطا در بارگذاری صفحه ${titleMap[page]}</p>
+                    <p style="font-size:12px;margin-top:8px;">لطفاً اتصال اینترنت را بررسی کنید.</p>
                 </div>
             </div>`;
-            initPage(page);
         });
 }
 
@@ -702,7 +703,6 @@ function createTicket() {
 
 function openTicket(id) {
     alert(`تیکت #${id} باز شد`);
-    // می‌تونی اینجا جزئیات تیکت رو نشون بدی
 }
 
 // ============================================================
@@ -830,7 +830,7 @@ function toggleSettings() {
 }
 
 // ============================================================
-//  تابع برای بستن منوها با کلیک خارج
+//  بستن منوها با کلیک خارج
 // ============================================================
 document.addEventListener('click', function(e) {
     const modal = document.getElementById('settingsModal');
