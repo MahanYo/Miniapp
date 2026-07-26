@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>اونلی فا | 𝐎𝐧𝐞𝐥𝐢𝐅𝐀</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-container" id="appContainer">
+
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+        <div class="title">
+            <i class="ph-fill ph-film-strip"></i>
+            <span id="pageTitle">اونلی فا</span>
+        </div>
+        <div class="header-actions">
+            <button class="header-btn" id="themeToggle" onclick="toggleTheme()">
+                <i class="ph ph-moon"></i>
+            </button>
+            <button class="header-btn" onclick="navigateTo('settings')">
+                <i class="ph ph-gear"></i>
+            </button>
+            <div class="user-avatar" id="userAvatar" onclick="navigateTo('profile')">👤</div>
+        </div>
+    </header>
+
+    <!-- ===== PAGES ===== -->
+    <div id="pageContainer">
+        <!-- صفحات توسط JS لود میشن -->
+    </div>
+
+    <!-- ===== DOCK ===== -->
+    <div class="dock">
+        <button class="dock-btn active" data-page="explore" onclick="navigateTo('explore')">
+            <i class="ph-fill ph-compass"></i>
+            <span class="label">اکسپلور</span>
+        </button>
+        <button class="dock-btn" data-page="chat" onclick="navigateTo('chat')">
+            <i class="ph-fill ph-chat-dots"></i>
+            <span class="label">چت</span>
+            <span class="badge-dot" id="chatBadge"></span>
+        </button>
+        <button class="dock-btn" data-page="support" onclick="navigateTo('support')">
+            <i class="ph-fill ph-headset"></i>
+            <span class="label">پشتیبانی</span>
+        </button>
+        <button class="dock-btn" data-page="profile" onclick="navigateTo('profile')">
+            <i class="ph-fill ph-user"></i>
+            <span class="label">پروفایل</span>
+        </button>
+    </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
